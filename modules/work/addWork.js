@@ -11,11 +11,7 @@ import React, {
   ScrollView,
   TextInput
 } from 'react-native';
-import DropDown,{
-  Select,
-  Option,
-  OptionList
-} from 'react-native-selectme'
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
 
 // import Select from './../../template/select'
 import WorkIndex from './workIndex';
@@ -37,7 +33,7 @@ export default class Add extends Component {
       Number:null,
       Title:null,
       Description:null,
-      // Storage:null,
+      UserType:null,
       // ProvideName:null,
       // ProvidePhone:null,
       // ProvideAddress:null,
@@ -79,27 +75,6 @@ export default class Add extends Component {
     })
     .done();
   };
-  _getOptionList() {
-    return this.refs['OPTIONLIST'];
-  }
-  _canada(optionText,optionValue,selectName) {//2016-3-20 添加参数text，<Option value=''>text</Option>,同时修改了react-native-selectme/lib/select.js
-    if(selectName=='分类'){
-      this.setState({
-          Classify: optionValue
-        });
-    }
-    else if(selectName=='新旧程度'){
-      this.setState({
-          Level: optionValue
-        });
-    }
-    else if(selectName=='面向人群'){
-      this.setState({
-          FaceToPeople: optionValue
-        });
-    }
-
-  }
   componentDidMount(){
     storage.load({
       key: 'loginState',
@@ -108,6 +83,7 @@ export default class Add extends Component {
     }).then( ret => {
         this.setState({
           MemberId:ret.id,
+          UserType:ret.type,
         });
     }).catch( err => {
         // navigator.replace({
@@ -125,9 +101,13 @@ export default class Add extends Component {
             style={{flex:1}}
             onPress={this._goBack}
           >
-            <Text style={{fontSize:20,color:'white'}}>返回</Text>
+            <FontAwesome
+              name='angle-left'
+              size={35}
+              color='white'
+              style={[styles.beer,{width:35,height:35,marginTop:-5}]}/>
           </TouchableOpacity>
-          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
+          <Text style={{flex:2,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
           <TouchableOpacity
             style={{flex:1,  alignItems:'flex-end',}}
           >
@@ -154,10 +134,14 @@ export default class Add extends Component {
             style={{height:40}}
             placeholder="薪资"
             onChangeText={(text) => this.setState({Salary: text})} />
-          <TextInput
-            style={{height:40}}
-            placeholder="人数"
-            onChangeText={(text) => this.setState({Number: text})} />
+          {
+            this.state.UserType==0?null:
+              <TextInput
+                style={{height:40}}
+                placeholder="人数"
+                onChangeText={(text) => this.setState({Number: text})} />
+          }
+          
           <TextInput
             style={{height:40}}
             placeholder="备注"

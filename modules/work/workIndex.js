@@ -10,8 +10,11 @@ import React, {
   ScrollView,
   TouchableOpacity,
   Text,
-  ListView
+  ListView,
+  ProgressBarAndroid,
 } from 'react-native';
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
+
 // let deviceWidth=Dimensions.get('window').width;
 import AddWork from './addWork';
 import WorkDetail from './workDetail';
@@ -23,9 +26,13 @@ export default class Index extends Component {
       dataSource: ds,
       loaded:false,
       User:null,
+      hasData:true,
     };
   };
   _goToAdd=(name,component)=>{
+    if(this.state.User.type==1){
+      name='发布招聘信息';
+    }
     const { navigator } = this.props;
     navigator.replace({
         name: name,
@@ -60,6 +67,11 @@ export default class Index extends Component {
           dataSource: this.state.dataSource.cloneWithRows(responseData),
           loaded: true,
         });
+        if(responseData.length==0){
+          this.setState({
+            hasData:false,
+          });
+        }
       })
       .done();
   };
@@ -70,17 +82,36 @@ export default class Index extends Component {
     return(
       <View >
         <TouchableOpacity
-          onPress={()=>this._goToDetail("勤工助学信息",WorkDetail,data)}
+          onPress={()=>this._goToDetail("勤工助学岗",WorkDetail,data)}
           style={{flexDirection:'row',padding:20,borderTopWidth :5,borderColor:'#DDDDDE'}}
         >
           <View style={{flex:2}}>
             <Text style={{fontSize:15}}>{data.Title}</Text>
           </View>
-          <View style={{flex:1}}>
-            <Text style={{fontSize:15,textAlign:'right'}}>查看详情</Text>
+          <View style={{flex:1,alignItems:'flex-end'}}>
+            <FontAwesome
+              name='angle-right'
+              size={35}
+              color='gray'
+              style={[styles.beer,{width:35,height:35,marginTop:-7}]}/>
           </View>
         </TouchableOpacity>
         
+      </View>
+    );
+  };
+  _NoData=()=>{
+    return(
+      <View
+       style={{alignItems:'center',padding:20,borderTopWidth :5,borderColor:'#DDDDDE'}}>
+        <Text>暂无数据</Text>
+      </View>
+    );
+  };
+  _renderLoadingView=()=>{
+    return(
+      <View style={styles.container}>
+        <ProgressBarAndroid styleAttr="Inverse" />
       </View>
     );
   };
@@ -110,20 +141,31 @@ export default class Index extends Component {
             style={{flex:1}}
             onPress={this._goBack}
           >
-            <Text style={{fontSize:20,color:'white'}}>返回</Text>
+            <FontAwesome
+              name='angle-left'
+              size={35}
+              color='white'
+              style={[styles.beer,{width:35,height:35,marginTop:-5}]}/>
           </TouchableOpacity>
-          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
+          <Text style={{flex:2,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
           <TouchableOpacity
             style={{flex:1,  alignItems:'flex-end',}}
             onPress={()=>this._goToAdd("发布求职信息",AddWork)}
           >
-            <Text style={{fontSize:20,color:'white'}}>发布求职信息</Text>
+            <FontAwesome
+              name='plus'
+              size={20}
+              color='white'
+              style={{width:30,height:50,marginTop:5}}/>
           </TouchableOpacity>
         </View>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowData)=>this._RendToview(rowData)}
-        />
+        {
+          this.state.loaded==false?this._renderLoadingView():
+            <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData)=>this._RendToview(rowData)}/>
+        }
+        {this.state.hasData==true?null:this._NoData()}
       </ScrollView>
     );
   }

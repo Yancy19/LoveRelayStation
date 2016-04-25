@@ -9,9 +9,10 @@ import React, {
   View,
   ScrollView,
   TouchableOpacity,
-  Text
+  Text,
 } from 'react-native';
-let deviceWidth=Dimensions.get('window').width;
+global.FontAwesome = require('react-native-vector-icons/FontAwesome');
+global.deviceWidth=Dimensions.get('window').width;
 // import Default from './default';
 // 登录
 import Login from './login';
@@ -24,7 +25,15 @@ import OldStuffIndex from './../modules/oldStuff/oldStuffIndex';
 // 个人中心
 import UsercenterIndex from './../modules/usercenter/usercenterIndex';
 
+import {LogoImg} from './logoImg';
+import {Developing} from './error';
 export default class Index extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      UserType:null,
+    };
+  };
   _onPress=(name,component,url='')=>{
     const { navigator } = this.props;
     navigator.push({
@@ -56,6 +65,53 @@ export default class Index extends Component {
         component: Login,
     });
   };
+  _Personal=()=>{
+    return(
+      <View>
+        <View style={{flexDirection:'row'}}>
+          <TouchableOpacity onPress={()=>this._onPress('爱心图书角',BookIndex,'/api/Book')} style={styles.Radius}>
+            <Text style={{fontSize:15}}>爱心图书角</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this._onPress('勤工助学岗',WorkIndex,'/api/Work')} style={styles.Radius}>
+            <Text style={{fontSize:15}}>勤工助学岗</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flexDirection:'row'}}>
+          <TouchableOpacity onPress={()=>this._onPress('旧物回收站',OldStuffIndex,'/api/OldStuff')} style={styles.Radius}>
+            <Text style={{fontSize:15}}>旧物回收站</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this._onPress('希望义卖坊',Developing,'')} style={styles.Radius}>
+            <Text style={{fontSize:15}}>希望义卖坊</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      
+    );
+  };
+  _Enterprise=()=>{
+    return(
+      <View>
+        <TouchableOpacity onPress={()=>this._onPress('勤工助学岗',WorkIndex,'/api/Work')} style={styles.Radius1}>
+            <View>
+              <Text style={{fontSize:15}}>勤工助学岗</Text>
+            </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  componentDidMount(){
+    
+    storage.load({
+      key: 'loginState',
+      autoSync: true,
+      syncInBackground: true,
+    }).then( ret => {
+        this.setState({
+          UserType:ret.type,
+        });
+    }).catch( err => {
+    });
+  }
   render(){
     const { name }=this.props;
     return(
@@ -65,9 +121,13 @@ export default class Index extends Component {
             style={{flex:1}}
             onPress={()=>this._onPress('个人中心',UsercenterIndex)}
           >
-            <Text style={{fontSize:20,color:'white'}}>个人中心</Text>
+            <FontAwesome
+              name='user'
+              size={30}
+              color='white'
+              style={{width:30,height:50}}/>
           </TouchableOpacity>
-          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
+          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>爱心接力站</Text>
           <TouchableOpacity
             style={{flex:1,  alignItems:'flex-end',}}
             onPress={this._loginOut}
@@ -76,26 +136,9 @@ export default class Index extends Component {
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity onPress={()=>this._onPress('爱心图书',BookIndex,'/api/Book')} style={styles.Radius}>
-              <View>
-                <Text style={{fontSize:15}}>爱心图书角</Text>
-              </View>
-          </TouchableOpacity>
+          <LogoImg/>
         </View>
-        <View>
-          <TouchableOpacity onPress={()=>this._onPress('勤工助学岗',WorkIndex,'/api/Work')} style={styles.Radius}>
-              <View>
-                <Text style={{fontSize:15}}>勤工助学岗</Text>
-              </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity onPress={()=>this._onPress('旧物回收站',OldStuffIndex,'/api/OldStuff')} style={styles.Radius}>
-              <View>
-                <Text style={{fontSize:15}}>旧物回收站</Text>
-              </View>
-          </TouchableOpacity>
-        </View>
+        {this.state.UserType==0?this._Personal():this._Enterprise()}
       </ScrollView>
     );
   }
@@ -104,10 +147,10 @@ const styles = StyleSheet.create({
   Radius:{
     flex:1,
     // width:50,
-    height:50,
+    height:deviceWidth/4,
     borderRadius:5,
     borderWidth:2,
-    alignItems:'flex-start',
+    alignItems:'center',
     justifyContent:'center',
     borderColor:'#438962',
     padding:5,
@@ -117,15 +160,13 @@ const styles = StyleSheet.create({
     backgroundColor:'#69C01B',
     padding:5,
   },
-  tags:{
-    flexDirection:'row',
-    backgroundColor:'#FFFFFF',
-    padding:5,
-  },
-  imgs:{
+  Radius1:{
     flex:1,
-    width:deviceWidth,
-    height:200,
-    marginBottom:5,
+    borderRadius:5,
+    borderWidth:2,
+    alignItems:'center',
+    justifyContent:'center',
+    borderColor:'#438962',
+    padding:5,
   },
 })

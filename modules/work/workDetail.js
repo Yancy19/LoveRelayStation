@@ -10,6 +10,7 @@ import React, {
   Text,
   ScrollView
 } from 'react-native';
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
 
 import WorkIndex from './workIndex';
 import Button from './../../template/button';
@@ -123,9 +124,13 @@ export default class Detail extends Component {
             style={{flex:1}}
             onPress={this._goBack}
           >
-            <Text style={{fontSize:20,color:'white'}}>返回</Text>
+            <FontAwesome
+              name='angle-left'
+              size={35}
+              color='white'
+              style={[styles.beer,{width:35,height:35,marginTop:-5}]}/>
           </TouchableOpacity>
-          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
+          <Text style={{flex:2,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
           <TouchableOpacity
             style={{flex:1,  alignItems:'flex-end',}}
           >
@@ -151,10 +156,12 @@ export default class Detail extends Component {
           <Text style={{fontSize:15}}>薪资:</Text>
           <Text style={{fontSize:15}}>{this.state.Salary}</Text>
         </View>
-        <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>人数:</Text>
-          <Text style={{fontSize:15}}>{this.state.Number}</Text>
-        </View>
+        {this.state.Number==0?null:
+          <View style={{flexDirection:'row',padding:20}}>
+            <Text style={{fontSize:15}}>人数:</Text>
+            <Text style={{fontSize:15}}>{this.state.Number}</Text>
+          </View>
+        }
         <View style={{flexDirection:'row',padding:20}}>
           <Text style={{fontSize:15}}>备注:</Text>
           <Text style={{fontSize:15}}>{this.state.Description}</Text>

@@ -8,12 +8,13 @@ import React, {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 
 import Button from './button';
 import Registered from './registered';
 import Index from './index';
+import {LogoImg} from './logoImg';
 export default class Login extends Component {
   constructor(props){
     super(props);
@@ -46,6 +47,7 @@ export default class Login extends Component {
             id:responseDate.data.Id,
             userName: responseDate.data.UserName,
             password: responseDate.data.Password,
+            type: responseDate.data.Type,
           },
           // if not specified, the defaultExpires will be applied instead.
           // if set to null, then it will never expires.
@@ -77,6 +79,9 @@ export default class Login extends Component {
           >
             <Text style={{fontSize:20,color:'white'}}>注册</Text>
           </TouchableOpacity>
+        </View>
+        <View>
+          <LogoImg/>
         </View>
         <View style={styles.row}>
           <View style={{flex:1}}>
@@ -133,5 +138,5 @@ const styles=StyleSheet.create({
     alignItems: 'flex-start',
     // paddingLeft:deviceWidth/2,
     // marginLeft:-150
-  }
+  },
 });

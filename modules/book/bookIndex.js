@@ -10,8 +10,10 @@ import React, {
   ScrollView,
   TouchableOpacity,
   Text,
-  ListView
+  ListView,
+  ProgressBarAndroid,
 } from 'react-native';
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
 // let deviceWidth=Dimensions.get('window').width;
 import AddBook from './addBook';
 import BookDetail from './bookDetail';
@@ -23,6 +25,7 @@ export default class Index extends Component {
       dataSource: ds,
       loaded:false,
       User:null,
+      hasData:true,
     };
   };
   _goToAdd=(name,component)=>{
@@ -60,6 +63,11 @@ export default class Index extends Component {
           dataSource: this.state.dataSource.cloneWithRows(responseData),
           loaded: true,
         });
+        if(responseData.length==0){
+          this.setState({
+            hasData:false,
+          });
+        }
       })
       .done();
   };
@@ -70,7 +78,7 @@ export default class Index extends Component {
     return(
       <View >
         <TouchableOpacity
-          onPress={()=>this._goToDetail("读物信息",BookDetail,data)}
+          onPress={()=>this._goToDetail("爱心图书角",BookDetail,data)}
           style={{flexDirection:'row',padding:20,borderTopWidth :5,borderColor:'#DDDDDE'}}
         >
           <View style={{flex:2}}>
@@ -79,11 +87,29 @@ export default class Index extends Component {
           <View style={{flex:2}}>
             <Text style={{fontSize:15}}>{data.Author}</Text>
           </View>
-          <View style={{flex:1}}>
-            <Text style={{fontSize:15,textAlign:'right'}}>查看详情</Text>
+          <View style={{flex:1,alignItems:'flex-end'}}>
+            <FontAwesome
+              name='angle-right'
+              size={35}
+              color='gray'
+              style={[styles.beer,{width:35,height:35,marginTop:-7}]}/>
           </View>
         </TouchableOpacity>
-        
+      </View>
+    );
+  };
+  _NoData=()=>{
+    return(
+      <View
+       style={{alignItems:'center',padding:20,borderTopWidth :5,borderColor:'#DDDDDE'}}>
+        <Text>暂无数据</Text>
+      </View>
+    );
+  };
+  _renderLoadingView=()=>{
+    return(
+      <View style={styles.container}>
+        <ProgressBarAndroid styleAttr="Inverse" />
       </View>
     );
   };
@@ -113,31 +139,43 @@ export default class Index extends Component {
             style={{flex:1}}
             onPress={this._goBack}
           >
-            <Text style={{fontSize:20,color:'white'}}>返回</Text>
+            <FontAwesome
+              name='angle-left'
+              size={35}
+              color='white'
+              style={[styles.beer,{width:35,height:35,marginTop:-5}]}/>
           </TouchableOpacity>
-          <Text style={{flex:1,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
+          <Text style={{flex:2,fontSize:20,color:'white',textAlign:'center'}}>{name}</Text>
           <TouchableOpacity
             style={{flex:1,  alignItems:'flex-end',}}
             onPress={()=>this._goToAdd("新增读物",AddBook)}
           >
-            <Text style={{fontSize:20,color:'white'}}>我也要捐书</Text>
+            <FontAwesome
+              name='plus'
+              size={20}
+              color='white'
+              style={{width:30,height:50,marginTop:5}}/>
           </TouchableOpacity>
         </View>
         <View style={{flexDirection:'row',padding:20}}>
           <View style={{flex:2}}>
             <Text style={{fontSize:15}}>书名</Text>
           </View>
-          <View style={{flex:2}}>
-            <Text style={{fontSize:15}}>作者</Text>
+          <View style={{flex:2,paddingLeft:30,}}>
+            <Text style={{fontSize:15,}}>作者</Text>
           </View>
           <View style={{flex:1}}>
             <Text style={{fontSize:15,textAlign:'right'}}>操作</Text>
           </View>
         </View>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowData)=>this._RendToview(rowData)}
-        />
+        {
+          this.state.loaded==false?this._renderLoadingView():
+            <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData)=>this._RendToview(rowData)}/>
+        }
+        
+        {this.state.hasData==true?null:this._NoData()}
       </ScrollView>
     );
   }
@@ -157,9 +195,11 @@ const styles = StyleSheet.create({
     backgroundColor:'#69C01B',
     padding:5,
   },
-  tags:{
-    flexDirection:'row',
-    backgroundColor:'#FFFFFF',
-    padding:5,
-  }
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: '#F5FCFF',
+  },
 })

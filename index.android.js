@@ -6,7 +6,6 @@ import React, {
   AppRegistry,
   Component,
   StyleSheet,
-  Dimensions,
   Text,
   View,
   TextInput,
@@ -14,7 +13,7 @@ import React, {
   TouchableOpacity,
   ScrollView
 } from 'react-native';
-global.deviceWidth=Dimensions.get('window').width;
+
 global.Url='http://58.154.51.219:8011/';
 import FirstRout from './template/firstRout';
 

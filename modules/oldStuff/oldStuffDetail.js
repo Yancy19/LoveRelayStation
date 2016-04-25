@@ -12,67 +12,34 @@ import React, {
 } from 'react-native';
 var FontAwesome = require('react-native-vector-icons/FontAwesome');
 
-import BookIndex from './bookIndex';
+import OldStuffIndex from './oldStuffIndex';
 import Button from './../../template/button';
 export default class Detail extends Component {
   constructor(props){
     super(props);
     this.state={
-      BookId:0,
-      Name: '',
-      Author:'',
-      Classify:0,
-      FaceToPeople:0,
-      Level:0,
-      MemberId:0,
-      Storage:0,
+      OldStuffId:null,
+      Name: null,
+      Introduction:null,
+      MemberId:null,
       ProvideName:null,
       ProvidePhone:null,
       ProvideAddress:null,
       UserId:null,
-      isBorrow:0,
     };
   };
   _goBack=()=>{
     const { navigator } = this.props;
     navigator.replace({
-        name: '爱心图书角',
-        component: BookIndex,
+        name: '旧物回收站',
+        component: OldStuffIndex,
         params:{
-          URL:'/api/Book',
+          URL:'/api/OldStuff',
         },
     });
   };
-  _operationBorrowBookRecord=(method)=>{
-    fetch(Url+'api/Book/BorrowBookRecord?memberId='+this.state.UserId+'&bookId='+this.state.BookId,{
-      method:method
-    })
-    .then((response)=>response.json())
-    .then((responseData)=>{
-      if(responseData.success){
-        if(method=='Post'){
-          this.setState({
-            IsBorrow:1,
-            Storage:this.state.Storage-1,
-          });
-        }
-        else{
-          this.setState({
-            IsBorrow:0,
-            Storage:this.state.Storage+1,
-          });
-        }
-      }
-      else{
-        alert(responseData.msg);
-      }
-      
-      
-    })
-    .done();
-  };
   _deleteBook=()=>{
-    fetch(Url+'api/Book/'+this.state.BookId,{
+    fetch(Url+'api/OldStuff/'+this.state.OldStuffId,{
       method:'Delete'
     })
     .then((response) => response.json())
@@ -87,37 +54,17 @@ export default class Detail extends Component {
     })
     .done();
   };
-  _getMember=(bookId,memberId)=>{
-    fetch(Url+'api/Book/CheckBorrowBookRecord?memberId='+memberId+'&bookId='+bookId,{
-      method:"Get"
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      if(responseData.success){
-        this.setState({
-          IsBorrow:1,
-        });
-      }
-    })
-    .done();
-    
-  };
   componentDidMount(){
     this.setState({
-      BookId:this.props.Data.Id,
+      OldStuffId:this.props.Data.Id,
       Name: this.props.Data.Name,
-      Author:this.props.Data.Author,
-      Classify:this.props.Data.Classify,
-      FaceToPeople:this.props.Data.FaceToPeople,
-      Level:this.props.Data.Level,
+      Introduction:this.props.Data.Introduction,
       MemberId:this.props.Data.MemberId,
-      Storage:this.props.Data.Storage,
       ProvideName:this.props.Data.ProvideName,
       ProvidePhone:this.props.Data.ProvidePhone,
       ProvideAddress:this.props.Data.ProvideAddress,
       UserId:this.props.User.id,
     });
-    this._getMember(this.props.Data.Id,this.props.User.id);
   }
   render(){
     const { name }=this.props
@@ -141,28 +88,12 @@ export default class Detail extends Component {
           </TouchableOpacity>
         </View>
         <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>书名:</Text>
+          <Text style={{fontSize:15}}>旧物名称:</Text>
           <Text style={{fontSize:15}}>{this.state.Name}</Text>
         </View>
         <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>作者:</Text>
-          <Text style={{fontSize:15}}>{this.state.Author}</Text>
-        </View>
-        <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>分类:</Text>
-          <Text style={{fontSize:15}}>{this.state.Classify}</Text>
-        </View>
-        <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>面向人群:</Text>
-          <Text style={{fontSize:15}}>{this.state.FaceToPeople}</Text>
-        </View>
-        <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>新旧程度:</Text>
-          <Text style={{fontSize:15}}>{this.state.Level}</Text>
-        </View>
-        <View style={{flexDirection:'row',padding:20}}>
-          <Text style={{fontSize:15}}>可借阅数量:</Text>
-          <Text style={{fontSize:15}}>{this.state.Storage}</Text>
+          <Text style={{fontSize:15}}>旧物说明:</Text>
+          <Text style={{fontSize:15}}>{this.state.Introduction}</Text>
         </View>
         <View style={{flexDirection:'row',padding:20}}>
           <Text style={{fontSize:15}}>提供者姓名:</Text>
@@ -182,15 +113,7 @@ export default class Detail extends Component {
             ?
             <Button bColor="green" text="取消捐赠" click={()=>this._deleteBook()}></Button>
             :
-              this.state.IsBorrow>0
-              ?
-              <Button bColor="green" text="还书" click={()=>this._operationBorrowBookRecord('Delete')}></Button>
-              :
-                this.state.Storage>0
-                ?
-                <Button bColor="green" text="可借阅" click={()=>this._operationBorrowBookRecord('Post')}></Button>
-                :
-                <Button bColor="green" text="无法借阅" click={this._operationBorrowBookRecord.bind(this)}></Button>
+            null
           }
         </View>
       </ScrollView>

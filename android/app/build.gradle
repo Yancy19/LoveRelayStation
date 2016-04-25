@@ -62,6 +62,14 @@ import com.android.build.OutputFile
 apply from: "react.gradle"
 
 /**
+ * add react-native-vector-icons By Yancy 2016/4/12
+ */
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf', 'Entypo.ttf', 'FontAwesome.ttf', 'Foundation.ttf', 'Ionicons.ttf', 'Octicons.ttf', 'Zocial.ttf' ] // Name of the font files you want to copy
+]
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+/**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
  *   - An APK that only works on x86 devices
