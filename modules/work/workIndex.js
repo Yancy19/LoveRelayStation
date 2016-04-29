@@ -34,14 +34,14 @@ export default class Index extends Component {
       name='发布招聘信息';
     }
     const { navigator } = this.props;
-    navigator.replace({
+    navigator.push({
         name: name,
         component: component,
     })
   };
   _goToDetail=(name,component,Data)=>{
     const { navigator } = this.props;
-    navigator.replace({
+    navigator.push({
         name: name,
         component: component,
         params:{

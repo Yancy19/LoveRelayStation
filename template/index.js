@@ -10,6 +10,9 @@ import React, {
   ScrollView,
   TouchableOpacity,
   Text,
+  Platform,
+  BackAndroid,
+  ToastAndroid,
 } from 'react-native';
 global.FontAwesome = require('react-native-vector-icons/FontAwesome');
 global.deviceWidth=Dimensions.get('window').width;
@@ -99,6 +102,32 @@ export default class Index extends Component {
       </View>
     );
   };
+  onBackAndroid = () => {
+    const nav = this.props.navigator;
+    const routers = nav.getCurrentRoutes();
+    if (routers.length > 1) {
+      nav.pop();
+      return true;
+    }
+    // return true;
+    if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+      //最近2秒内按过back键，可以退出应用。
+      return false;
+    }
+    this.lastBackPressed = Date.now();
+    ToastAndroid.show('再按一次退出应用',ToastAndroid.SHORT);
+    return true;
+  };
+  componentWillMount() {
+    if (Platform.OS === 'android') {
+      BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
+    }
+  }
+  componentWillUnmount() {
+    if (Platform.OS === 'android') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid);
+    }
+  }
   componentDidMount(){
     
     storage.load({

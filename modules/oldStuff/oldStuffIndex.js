@@ -31,14 +31,14 @@ export default class Index extends Component {
   };
   _goToAdd=(name,component)=>{
     const { navigator } = this.props;
-    navigator.replace({
+    navigator.push({
         name: name,
         component: component,
     })
   };
   _goToDetail=(name,component,Data)=>{
     const { navigator } = this.props;
-    navigator.replace({
+    navigator.push({
         name: name,
         component: component,
         params:{

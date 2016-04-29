@@ -14,7 +14,8 @@ import React, {
   ScrollView
 } from 'react-native';
 
-global.Url='http://58.154.51.219:8011/';
+// global.Url='http://58.154.51.219:8011/';
+global.Url='http://192.168.1.121:8010/';
 import FirstRout from './template/firstRout';
 
 class Project extends Component {

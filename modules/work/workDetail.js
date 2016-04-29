@@ -33,6 +33,7 @@ export default class Detail extends Component {
   };
   _goBack=()=>{
     const { navigator } = this.props;
+    navigator.pop();
     navigator.replace({
         name: '勤工助学岗',
         component: WorkIndex,

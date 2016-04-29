@@ -35,6 +35,7 @@ export default class Detail extends Component {
   };
   _goBack=()=>{
     const { navigator } = this.props;
+    navigator.pop();
     navigator.replace({
         name: '爱心图书角',
         component: BookIndex,

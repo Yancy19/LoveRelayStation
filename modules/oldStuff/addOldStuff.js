@@ -30,6 +30,7 @@ export default class Add extends Component {
 
   _goBack=()=>{
     const { navigator } = this.props;
+    navigator.pop();
     navigator.replace({
         name: '旧物回收站',
         component: OldStuffIndex,
